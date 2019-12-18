@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Josh Justice <josh.justice@accesscfa.com>",
   "license": "MIT",
+  "scripts": {
+    "sequelize": "sequelize"
+  },
   "devDependencies": {
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
