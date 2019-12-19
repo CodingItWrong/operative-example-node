@@ -50,12 +50,8 @@ const postOperationsRoute = async (req, res) => {
         break
     }
   }
-  const promises = operations.map(async operation => {
-    await Operation.create(operation)
-  })
-  Promise.all(promises)
-    .then(ids => res.send(ids))
-    .catch(err => res.send(err))
+
+  res.send([])
 }
 
 const todoRouter = express.Router()
