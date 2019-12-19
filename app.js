@@ -40,16 +40,14 @@ const postOperationsRoute = (req, res) => {
           { id: operation.recordId },
           operation.attributes
         )
-        return Todo.create(attributesWithId).then(todo => todo.id)
+        return Todo.create(attributesWithId)
       }
       case 'update':
         return Todo.update(operation.attributes, {
           where: { id: operation.recordId },
-        }).then(() => operation.recordId)
+        })
       case 'delete':
-        return Todo.destroy({ where: { id: operation.recordId } }).then(
-          () => operation.recordId
-        )
+        return Todo.destroy({ where: { id: operation.recordId } })
     }
   })
   Promise.all(promises)
