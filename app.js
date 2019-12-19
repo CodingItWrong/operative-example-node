@@ -11,12 +11,35 @@ const { Todo } = db
 let app = express()
 const httpServer = http.createServer(app)
 
-const todoRouter = express.Router()
-todoRouter.route('/').get((req, res) => {
+const getDatabaseRoute = (req, res) => {
   Todo.findAll()
     .then(todos => res.send(todos))
     .catch(err => res.send(err))
-})
+}
+
+const postOperationsRoute = (req, res) => {
+  const promises = req.body.map(operation => {
+    switch (operation.action) {
+      case 'create':
+        return Todo.create(operation.attributes)
+      case 'update':
+        return Todo.update(operation.attributes, {
+          where: { id: operation.id },
+        })
+      case 'delete':
+        return Todo.destroy({ where: { id: operation.id } })
+    }
+  })
+  Promise.all(promises)
+    .then(results => res.send(results))
+    .catch(err => res.send(err))
+}
+
+const todoRouter = express.Router()
+todoRouter
+  .route('/')
+  .get(getDatabaseRoute)
+  .post(express.json(), postOperationsRoute)
 
 app.use('/todos', todoRouter)
 
