@@ -8,6 +8,15 @@ const { Todo, Operation } = db
 let app = express()
 const httpServer = http.createServer(app)
 
+const getOperationsSince = since => {
+  const startDate = new Date(parseInt(since))
+  return Operation.findAll({
+    where: {
+      createdAt: { [Op.gt]: startDate },
+    },
+  })
+}
+
 const getDatabaseRoute = (req, res) => {
   Todo.findAll()
     .then(todos => res.send(todos))
@@ -15,12 +24,7 @@ const getDatabaseRoute = (req, res) => {
 }
 
 const getOperationsRoute = (req, res) => {
-  const startDate = new Date(parseInt(req.query.since))
-  Operation.findAll({
-    where: {
-      createdAt: { [Op.gt]: startDate },
-    },
-  })
+  getOperationsSince(req.query.since)
     .then(operations => res.send(operations))
     .catch(err => res.send(err))
 }
@@ -51,7 +55,9 @@ const postOperationsRoute = async (req, res) => {
     }
   }
 
-  res.send([])
+  // this should include the operation sent into us
+  const otherOperations = await getOperationsSince(req.query.since)
+  res.send(otherOperations)
 }
 
 const todoRouter = express.Router()
