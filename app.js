@@ -30,25 +30,33 @@ const getOperationsRoute = (req, res) => {
     .catch(err => res.send(err))
 }
 
-const postOperationsRoute = (req, res) => {
+const postOperationsRoute = async (req, res) => {
   const operations = req.body
-  const promises = operations.map(async operation => {
+
+  for (const operation of operations) {
     await Operation.create(operation)
+
     switch (operation.action) {
       case 'create': {
         const attributesWithId = Object.assign(
           { id: operation.recordId },
           operation.attributes
         )
-        return Todo.create(attributesWithId)
+        await Todo.create(attributesWithId)
+        break
       }
       case 'update':
-        return Todo.update(operation.attributes, {
+        await Todo.update(operation.attributes, {
           where: { id: operation.recordId },
         })
+        break
       case 'delete':
-        return Todo.destroy({ where: { id: operation.recordId } })
+        await Todo.destroy({ where: { id: operation.recordId } })
+        break
     }
+  }
+  const promises = operations.map(async operation => {
+    await Operation.create(operation)
   })
   Promise.all(promises)
     .then(ids => res.send(ids))
