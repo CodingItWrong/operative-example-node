@@ -21,17 +21,19 @@ const postOperationsRoute = (req, res) => {
   const promises = req.body.map(operation => {
     switch (operation.action) {
       case 'create':
-        return Todo.create(operation.attributes)
+        return Todo.create(operation.attributes).then(todo => todo.id)
       case 'update':
         return Todo.update(operation.attributes, {
           where: { id: operation.id },
-        })
+        }).then(() => operation.id)
       case 'delete':
-        return Todo.destroy({ where: { id: operation.id } })
+        return Todo.destroy({ where: { id: operation.id } }).then(
+          () => operation.id
+        )
     }
   })
   Promise.all(promises)
-    .then(results => res.send(results))
+    .then(ids => res.send(ids))
     .catch(err => res.send(err))
 }
 
