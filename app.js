@@ -31,7 +31,8 @@ const getOperationsRoute = (req, res) => {
 }
 
 const postOperationsRoute = (req, res) => {
-  const promises = req.body.map(async operation => {
+  const operations = req.body
+  const promises = operations.map(async operation => {
     await Operation.create(operation)
     switch (operation.action) {
       case 'create': {
