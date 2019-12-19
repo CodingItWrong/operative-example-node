@@ -2,6 +2,7 @@ const express = require('express')
 const http = require('http')
 var cors = require('cors')
 const db = require('./models')
+const { Op } = require('sequelize')
 const { Todo, Operation } = db
 
 // create first record
@@ -15,6 +16,17 @@ const httpServer = http.createServer(app)
 const getDatabaseRoute = (req, res) => {
   Todo.findAll()
     .then(todos => res.send(todos))
+    .catch(err => res.send(err))
+}
+
+const getOperationsRoute = (req, res) => {
+  const startDate = new Date(parseInt(req.query.since))
+  Operation.findAll({
+    where: {
+      createdAt: { [Op.gt]: startDate },
+    },
+  })
+    .then(operations => res.send(operations))
     .catch(err => res.send(err))
 }
 
@@ -45,9 +57,10 @@ const postOperationsRoute = (req, res) => {
 }
 
 const todoRouter = express.Router()
+todoRouter.route('/').get(getDatabaseRoute)
 todoRouter
-  .route('/')
-  .get(getDatabaseRoute)
+  .route('/operations')
+  .get(getOperationsRoute)
   .post(express.json(), postOperationsRoute)
 
 app.use(cors())
