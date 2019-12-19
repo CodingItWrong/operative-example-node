@@ -3,7 +3,12 @@ module.exports = (sequelize, DataTypes) => {
   const Todo = sequelize.define(
     'Todo',
     {
-      name: DataTypes.UUID,
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV1,
+        primaryKey: true,
+      },
+      name: DataTypes.STRING,
       completedAt: DataTypes.DATE,
     },
     {}
