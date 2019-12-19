@@ -21,8 +21,13 @@ const getDatabaseRoute = (req, res) => {
 const postOperationsRoute = (req, res) => {
   const promises = req.body.map(operation => {
     switch (operation.action) {
-      case 'create':
-        return Todo.create(operation.attributes).then(todo => todo.id)
+      case 'create': {
+        const attributesWithId = Object.assign(
+          { id: operation.id },
+          operation.attributes
+        )
+        return Todo.create(attributesWithId).then(todo => todo.id)
+      }
       case 'update':
         return Todo.update(operation.attributes, {
           where: { id: operation.id },
