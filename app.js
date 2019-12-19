@@ -1,5 +1,6 @@
 const express = require('express')
 const http = require('http')
+var cors = require('cors')
 const db = require('./models')
 const { Todo } = db
 
@@ -43,6 +44,7 @@ todoRouter
   .get(getDatabaseRoute)
   .post(express.json(), postOperationsRoute)
 
+app.use(cors())
 app.use('/todos', todoRouter)
 
 const port = process.env.PORT || 3000
