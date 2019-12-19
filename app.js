@@ -2,7 +2,7 @@ const express = require('express')
 const http = require('http')
 var cors = require('cors')
 const db = require('./models')
-const { Todo } = db
+const { Todo, Operation } = db
 
 // create first record
 // Todo.create({ name: 'my todo' })
@@ -19,22 +19,23 @@ const getDatabaseRoute = (req, res) => {
 }
 
 const postOperationsRoute = (req, res) => {
-  const promises = req.body.map(operation => {
+  const promises = req.body.map(async operation => {
+    await Operation.create(operation)
     switch (operation.action) {
       case 'create': {
         const attributesWithId = Object.assign(
-          { id: operation.id },
+          { id: operation.recordId },
           operation.attributes
         )
         return Todo.create(attributesWithId).then(todo => todo.id)
       }
       case 'update':
         return Todo.update(operation.attributes, {
-          where: { id: operation.id },
-        }).then(() => operation.id)
+          where: { id: operation.recordId },
+        }).then(() => operation.recordId)
       case 'delete':
-        return Todo.destroy({ where: { id: operation.id } }).then(
-          () => operation.id
+        return Todo.destroy({ where: { id: operation.recordId } }).then(
+          () => operation.recordId
         )
     }
   })
