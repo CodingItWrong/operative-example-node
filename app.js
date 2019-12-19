@@ -5,11 +5,6 @@ const db = require('./models')
 const { Op } = require('sequelize')
 const { Todo, Operation } = db
 
-// create first record
-// Todo.create({ name: 'my todo' })
-//   .then(console.log)
-//   .catch(console.error)
-
 let app = express()
 const httpServer = http.createServer(app)
 
