@@ -32,6 +32,9 @@ const getOperationsRoute = (req, res) => {
 const postOperationsRoute = async (req, res) => {
   const operations = req.body
 
+  // this should NOT yet include the operation sent into us
+  const otherOperations = await getOperationsSince(req.query.since)
+
   for (const operation of operations) {
     await Operation.create(operation)
 
@@ -55,8 +58,6 @@ const postOperationsRoute = async (req, res) => {
     }
   }
 
-  // this should include the operation sent into us
-  const otherOperations = await getOperationsSince(req.query.since)
   res.send(otherOperations)
 }
 
