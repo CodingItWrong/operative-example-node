@@ -1,5 +1,6 @@
 const express = require('express')
 const http = require('http')
+const WebSocket = require('ws')
 var cors = require('cors')
 const db = require('./models')
 const { Op } = require('sequelize')
@@ -74,6 +75,23 @@ todoRouter
 
 app.use(cors())
 app.use('/todos', todoRouter)
+
+const wss = new WebSocket.Server({ server: httpServer })
+
+const clientsOtherThan = me =>
+  Array.from(wss.clients).filter(
+    client => client !== me && client.readyState === WebSocket.OPEN
+  )
+
+wss.on('connection', conn => {
+  conn.on('message', message => {
+    const operations = JSON.parse(message)
+    handleOperations(operations)
+    clientsOtherThan(conn).forEach(client => {
+      client.send(message)
+    })
+  })
+})
 
 const port = process.env.PORT || 3000
 httpServer.listen(port, () => {
