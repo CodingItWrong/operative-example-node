@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon app.js",
-    "sequelize": "sequelize"
+    "sequelize": "sequelize",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "eslint": "^6.7.2",

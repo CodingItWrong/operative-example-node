@@ -1,5 +1,5 @@
-'use strict'
-const DataTypes = require('sequelize').DataTypes
+'use strict';
+const DataTypes = require('sequelize').DataTypes;
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -28,9 +28,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    })
+    });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Operations')
+    return queryInterface.dropTable('Operations');
   },
-}
+};

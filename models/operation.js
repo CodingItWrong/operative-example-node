@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Operation = sequelize.define(
     'Operation',
@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       attributes: DataTypes.JSONB,
     },
     {}
-  )
+  );
   Operation.associate = function(models) {
     // associations can be defined here
-  }
-  return Operation
-}
+  };
+  return Operation;
+};
