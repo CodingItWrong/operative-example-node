@@ -14,19 +14,22 @@ const repo = {
       where: { id },
     }),
   destroyRecord: id => Todo.destroy({ where: { id } }),
+
+  recordOperation: operation => Operation.create(operation),
+  findOperationsSince: since => {
+    const startDate = new Date(parseInt(since));
+    return Operation.findAll({
+      where: {
+        createdAt: { [Op.gt]: startDate },
+      },
+    });
+  },
 };
 
 let app = express();
 const httpServer = http.createServer(app);
 
-const getOperationsSince = since => {
-  const startDate = new Date(parseInt(since));
-  return Operation.findAll({
-    where: {
-      createdAt: { [Op.gt]: startDate },
-    },
-  });
-};
+const getOperationsSince = since => repo.findOperationsSince(since);
 
 const getDatabaseRoute = (req, res) => {
   repo
@@ -43,7 +46,7 @@ const getOperationsRoute = (req, res) => {
 
 const handleOperations = async operations => {
   for (const operation of operations) {
-    await Operation.create(operation);
+    await repo.recordOperation(operation);
 
     switch (operation.action) {
       case 'create': {
