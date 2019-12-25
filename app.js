@@ -6,6 +6,16 @@ const db = require('./models');
 const { Op } = require('sequelize');
 const { Todo, Operation } = db;
 
+const repo = {
+  findAllRecords: () => Todo.findAll(),
+  createRecord: attributes => Todo.create(attributes),
+  updateRecord: (id, attributes) =>
+    Todo.update(attributes, {
+      where: { id },
+    }),
+  destroyRecord: id => Todo.destroy({ where: { id } }),
+};
+
 let app = express();
 const httpServer = http.createServer(app);
 
@@ -19,7 +29,8 @@ const getOperationsSince = since => {
 };
 
 const getDatabaseRoute = (req, res) => {
-  Todo.findAll()
+  repo
+    .findAllRecords()
     .then(todos => res.send(todos))
     .catch(err => res.send(err));
 };
@@ -40,16 +51,14 @@ const handleOperations = async operations => {
           { id: operation.recordId },
           operation.attributes
         );
-        await Todo.create(attributesWithId);
+        await repo.createRecord(attributesWithId);
         break;
       }
       case 'update':
-        await Todo.update(operation.attributes, {
-          where: { id: operation.recordId },
-        });
+        await repo.updateRecord(operation.recordId, operation.attributes);
         break;
       case 'delete':
-        await Todo.destroy({ where: { id: operation.recordId } });
+        await repo.destroyRecord(operation.recordId);
         break;
     }
   }
