@@ -29,12 +29,7 @@ const getOperationsRoute = (req, res) => {
     .catch(err => res.send(err))
 }
 
-const postOperationsRoute = async (req, res) => {
-  const operations = req.body
-
-  // this should NOT yet include the operation sent into us
-  const otherOperations = await getOperationsSince(req.query.since)
-
+const handleOperations = async operations => {
   for (const operation of operations) {
     await Operation.create(operation)
 
@@ -57,6 +52,15 @@ const postOperationsRoute = async (req, res) => {
         break
     }
   }
+}
+
+const postOperationsRoute = async (req, res) => {
+  const operations = req.body
+
+  // this should NOT yet include the operation sent into us
+  const otherOperations = await getOperationsSince(req.query.since)
+
+  handleOperations(operations)
 
   res.send(otherOperations)
 }
