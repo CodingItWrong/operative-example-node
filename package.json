@@ -1,6 +1,6 @@
 {
   "name": "operative",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "author": "Josh Justice <josh.justice@accesscfa.com>",
   "license": "MIT",
@@ -20,6 +20,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "operative-node": "codingitwrong/operative-node#master",
     "pg": "^7.15.1",
     "sequelize": "^5.21.3",
     "sequelize-cli": "^5.5.1",

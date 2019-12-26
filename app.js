@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 var cors = require('cors');
-const Operative = require('./operative');
+const Operative = require('operative-node');
 const repo = require('./repo');
 
 let app = express();
