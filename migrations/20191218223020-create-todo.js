@@ -1,5 +1,4 @@
 'use strict';
-const DataTypes = require('sequelize').DataTypes;
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
